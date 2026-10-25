@@ -89,7 +89,7 @@ export function StockBadge({ quantity }: { quantity: number }) {
         ? ["bg-amber-50 text-amber-800 ring-amber-200", `Only ${quantity} left`]
         : ["bg-emerald-50 text-emerald-700 ring-emerald-200", `${quantity} in stock`];
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${tone}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap ring-1 ring-inset ${tone}`}>
       <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
       {text}
     </span>
