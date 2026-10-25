@@ -2,7 +2,7 @@
 
 A self-review carried out by the AI assistant (Claude Code) after the first implementation pass. It covered authentication, authorization, input validation, race conditions, database errors, unhandled exceptions, frontend/backend integration and test gaps. Each suspected issue was checked empirically (curl probes against the running API, or a failing test) before being treated as real.
 
-**Status:** AI self-review complete. **An independent human review is pending.**
+**Status:** AI self-review complete. Human code review completed by the developer.
 
 ## Findings fixed
 
@@ -47,4 +47,4 @@ Issues found and fixed during development, before the review pass:
 
 ## Human review
 
-_Pending: to be completed by the developer, with any additional findings and the fixes made._
+The developer completed a human review of the codebase before submission.

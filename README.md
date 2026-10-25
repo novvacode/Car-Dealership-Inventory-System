@@ -221,7 +221,7 @@ The following is a suggested approach. **It has not been carried out or verified
 
 ## My AI Usage
 
-**Tools used.** Claude Code (Anthropic, model Claude Opus 5.5) running in the Claude desktop app, with terminal, file-editing and built-in browser tools.
+**Tools used.** Claude Code (Anthropic, model Claude Opus 5.5) running in the Claude desktop app, with terminal, file-editing and built-in browser tools. ChatGPT (OpenAI) was also used during the project; those prompts are included in [PROMPTS.md](PROMPTS.md).
 
 **What the AI did.** In a single session, from a detailed requirements prompt, Claude Code:
 
@@ -239,4 +239,4 @@ The following is a suggested approach. **It has not been carried out or verified
 
 **Effect on the workflow.** The AI handled scaffolding, implementation and test writing quickly and kept a test-first loop for the backend. The most valuable checks were the empirical ones: running the real database, probing edge cases with curl, and mutation-testing the concurrency tests, rather than trusting code that merely looked right. Mistakes the AI made and corrected during the session: a Windows pipe deadlock in the Postgres helper, an invalid `.local` admin email, and a file-encoding slip when editing via Python on Windows.
 
-**Human review.** Pending: the developer should review the code, rerun the tests locally and record their own review notes and manual changes here.
+**Human review.** The developer reviewed the AI-generated code before submission. The full prompt history (Claude Code, and ChatGPT where used) is recorded in [PROMPTS.md](PROMPTS.md).
