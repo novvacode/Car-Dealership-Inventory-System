@@ -135,3 +135,15 @@ def test_token_for_deleted_user_is_rejected(client, customer, customer_headers):
         db.delete(db.get(User, customer.id))
         db.commit()
     assert client.get("/api/auth/me", headers=customer_headers).status_code == 401
+
+
+# ---------- bcrypt 72-byte limit (found in code review) ----------
+
+def test_register_rejects_password_over_72_bytes_even_if_under_72_chars(client):
+    password = "é" * 40 + "a1"  # 42 characters, 82 UTF-8 bytes
+    assert register(client, password=password).status_code == 422
+
+
+def test_login_with_over_72_byte_password_is_unauthorized_not_error(client, customer):
+    response = client.post("/api/auth/login", json={"email": customer.email, "password": "é" * 40 + "a1"})
+    assert response.status_code == 401

@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Annotated
 
-from fastapi import APIRouter, Body, HTTPException, Query, Response, status
+from fastapi import APIRouter, Body, HTTPException, Path, Query, Response, status
 from sqlalchemy import Select, func, select, update
 
 from app.deps import AdminUser, CurrentUser, DbSession
@@ -18,8 +18,11 @@ from app.schemas import (
 
 router = APIRouter(prefix="/api/vehicles", tags=["vehicles"])
 
+PG_INT_MAX = 2**31 - 1  # ids are PostgreSQL INTEGER; larger values would raise a DataError (500)
+
+VehicleId = Annotated[int, Path(ge=1, le=PG_INT_MAX)]
 Limit = Annotated[int, Query(ge=1, le=500)]
-Offset = Annotated[int, Query(ge=0)]
+Offset = Annotated[int, Query(ge=0, le=PG_INT_MAX)]
 PriceFilter = Annotated[Decimal | None, Query(ge=0)]
 TextFilter = Annotated[str | None, Query(max_length=50)]
 DEFAULT_QUANTITY = Body(default_factory=QuantityRequest)
@@ -92,7 +95,7 @@ def create_vehicle(payload: VehicleCreate, db: DbSession, _: AdminUser):
 
 
 @router.put("/{vehicle_id}", response_model=VehicleOut)
-def update_vehicle(vehicle_id: int, payload: VehicleUpdate, db: DbSession, _: AdminUser):
+def update_vehicle(vehicle_id: VehicleId, payload: VehicleUpdate, db: DbSession, _: AdminUser):
     # Row lock so a concurrent purchase cannot interleave with an admin edit
     # of the quantity (the edit would otherwise silently overwrite the sale).
     vehicle = db.scalar(select(Vehicle).where(Vehicle.id == vehicle_id).with_for_update())
@@ -106,7 +109,7 @@ def update_vehicle(vehicle_id: int, payload: VehicleUpdate, db: DbSession, _: Ad
 
 
 @router.delete("/{vehicle_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_vehicle(vehicle_id: int, db: DbSession, _: AdminUser) -> Response:
+def delete_vehicle(vehicle_id: VehicleId, db: DbSession, _: AdminUser) -> Response:
     db.delete(_get_or_404(db, vehicle_id))
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -114,7 +117,7 @@ def delete_vehicle(vehicle_id: int, db: DbSession, _: AdminUser) -> Response:
 
 @router.post("/{vehicle_id}/purchase", response_model=PurchaseResponse)
 def purchase_vehicle(
-    vehicle_id: int, db: DbSession, user: CurrentUser, payload: QuantityRequest = DEFAULT_QUANTITY
+    vehicle_id: VehicleId, db: DbSession, user: CurrentUser, payload: QuantityRequest = DEFAULT_QUANTITY
 ):
     # A single conditional UPDATE is atomic in PostgreSQL: concurrent buyers
     # serialise on the row lock, and each re-checks `quantity >= :n` against
@@ -140,7 +143,7 @@ def purchase_vehicle(
 
 
 @router.post("/{vehicle_id}/restock", response_model=VehicleOut)
-def restock_vehicle(vehicle_id: int, payload: QuantityRequest, db: DbSession, _: AdminUser):
+def restock_vehicle(vehicle_id: VehicleId, payload: QuantityRequest, db: DbSession, _: AdminUser):
     vehicle = db.scalar(
         update(Vehicle)
         .where(Vehicle.id == vehicle_id, Vehicle.quantity + payload.quantity <= MAX_STOCK)

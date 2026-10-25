@@ -17,6 +17,7 @@ database), you do not need this script: just point DATABASE_URL at it.
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -46,6 +47,10 @@ def _config():
     test_url = make_url(env["TEST_DATABASE_URL"]) if env.get("TEST_DATABASE_URL") else None
     if app_url.host not in ("127.0.0.1", "localhost"):
         sys.exit("DATABASE_URL does not point at localhost; nothing to manage here")
+    for url in filter(None, [app_url, test_url]):
+        # Names are interpolated into SQL / CLI arguments below.
+        if not re.fullmatch(r"[A-Za-z0-9_]+", url.database or "") or not re.fullmatch(r"[A-Za-z0-9_]+", url.username or ""):
+            sys.exit("Database and user names may only contain letters, digits and underscores")
     return app_url, test_url
 
 

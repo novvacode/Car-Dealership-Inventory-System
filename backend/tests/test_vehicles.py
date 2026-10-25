@@ -199,3 +199,32 @@ def test_search_treats_wildcards_literally(client, inventory, customer_headers):
 def test_search_rejects_invalid_price_range(client, customer_headers, params):
     response = client.get("/api/vehicles/search", params=params, headers=customer_headers)
     assert response.status_code == 422
+
+
+# ---------- Input bounds (found in code review) ----------
+
+@pytest.mark.parametrize(
+    "method,path",
+    [
+        ("put", "/api/vehicles/99999999999"),
+        ("delete", "/api/vehicles/99999999999"),
+        ("post", "/api/vehicles/99999999999/purchase"),
+        ("post", "/api/vehicles/99999999999/restock"),
+        ("post", "/api/vehicles/0/purchase"),
+    ],
+)
+def test_out_of_range_vehicle_ids_are_rejected_not_server_errors(client, admin_headers, method, path):
+    kwargs = {"json": {"quantity": 1}} if method != "delete" else {}
+    response = getattr(client, method)(path, headers=admin_headers, **kwargs)
+    assert response.status_code == 422
+
+
+@pytest.mark.parametrize("path", ["/api/vehicles", "/api/vehicles/search"])
+def test_huge_offset_is_rejected_not_server_error(client, customer_headers, path):
+    response = client.get(path, params={"offset": 10**20}, headers=customer_headers)
+    assert response.status_code == 422
+
+
+@pytest.mark.parametrize("params", [{"min_price": "NaN"}, {"max_price": "Infinity"}])
+def test_search_rejects_non_finite_prices(client, customer_headers, params):
+    assert client.get("/api/vehicles/search", params=params, headers=customer_headers).status_code == 422
