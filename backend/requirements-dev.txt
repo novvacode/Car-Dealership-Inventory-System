@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest==8.4.2
+httpx==0.27.2
+# Optional: bundles PostgreSQL binaries used by scripts/local_postgres.py
+# for machines without a system PostgreSQL install.
+pgserver==0.1.4
