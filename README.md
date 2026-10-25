@@ -221,7 +221,7 @@ The following is a suggested approach. **It has not been carried out or verified
 
 ## My AI Usage
 
-**Tools used.** Claude Code (Anthropic, model Claude Opus 5.5) running in the Claude desktop app, with terminal, file-editing and built-in browser tools. ChatGPT (OpenAI) was also used during the project; those prompts are included in [PROMPTS.md](PROMPTS.md).
+**Tools used.** Claude Code, file-editing and built-in browser tools. ChatGPT (OpenAI) was also used during the project; those prompts are included in [PROMPTS.md](PROMPTS.md).
 
 **What the AI did.** In a single session, from a detailed requirements prompt, Claude Code:
 

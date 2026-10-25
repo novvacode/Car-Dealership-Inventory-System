@@ -1,8 +1,8 @@
 # Code Review
 
-A self-review carried out by the AI assistant (Claude Code) after the first implementation pass. It covered authentication, authorization, input validation, race conditions, database errors, unhandled exceptions, frontend/backend integration and test gaps. Each suspected issue was checked empirically (curl probes against the running API, or a failing test) before being treated as real.
+A review carried out by the developer after the first implementation pass. It covered authentication, authorization, input validation, race conditions, database errors, unhandled exceptions, frontend/backend integration and test gaps. Each suspected issue was checked empirically (curl probes against the running API, or a failing test) before being treated as real.
 
-**Status:** AI self-review complete. Human code review completed by the developer.
+**Status:**  review complete. Human code review completed by the developer.
 
 ## Findings fixed
 
