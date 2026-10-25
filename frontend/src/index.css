@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink-950: #070d1a;
+  --color-ink-900: #0b1324;
+  --color-ink-800: #141f36;
+  --color-ink-700: #22304d;
+  --color-ink-600: #3a4a6b;
+
+  --color-accent-50: #fff4ec;
+  --color-accent-100: #ffe4d1;
+  --color-accent-500: #f97316;
+  --color-accent-600: #ea580c;
+  --color-accent-700: #c2410c;
+
+  --color-canvas: #f4f3ef;
+}
+
+@layer base {
+  body {
+    @apply bg-canvas text-ink-900 antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent-500;
+  }
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-ink-900 shadow-xs
+      placeholder:text-stone-400 transition
+      focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 focus:outline-none
+      aria-invalid:border-red-500 aria-invalid:ring-red-500/20;
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-semibold tracking-wide text-ink-700 uppercase;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 180ms ease-out;
+}
